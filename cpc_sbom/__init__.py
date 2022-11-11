@@ -34,9 +34,15 @@ def generate_sbom():
             # use regular expression to get the Licenses from the copyright file
             if package_copyright:
                 package_licenses = re.findall(
-                    r"License: (.*)", package_copyright, re.MULTILINE
+                    r"^License: (.*)$\n", package_copyright, re.MULTILINE
                 )
                 package_licenses = list(set(package_licenses))
+                # strip any whitespace from the licenses
+                package_licenses = [
+                    package_license.strip()
+                    for package_license in package_licenses
+                    if package_license.strip() != ""
+                ]
 
             package_installed_record = package.installed.record
             package_name = package.name
@@ -88,7 +94,9 @@ def generate_sbom():
     spdx_output = jinja2_spdx_template.render(
         installed_packages=installed_packages, creation_date=datetime.now()
     )
-    spdx_output_json = json.loads(spdx_output)  # convert the spdx output to json to ensure valid json
+    spdx_output_json = json.loads(
+        spdx_output
+    )  # convert the spdx output to json to ensure valid json
     print(json.dumps(spdx_output_json, indent=4))
 
 

@@ -23,7 +23,7 @@
                     "{{ license }}"{{ ", " if not loop.last else "" }}
                 {%- endfor -%}
             ],
-            "licenseConcluded": "NOASSERTION",{#- Marking NOASSERTION here as this can only be one value. Many packages have more than one license. These package licenses are included in licenseDeclared -#}
+            "licenseConcluded": "{%- for license in installed_package.licenses -%}{{ license }}{{ " AND " if not loop.last else "" }}{%- endfor -%}",
             "downloadLocation": "{{ installed_package.deb_url }}",
             "PackageCopyrightText": {{ installed_package.copyright }},
             "filesAnalyzed": false,
