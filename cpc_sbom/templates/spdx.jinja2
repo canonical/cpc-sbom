@@ -17,14 +17,27 @@
             "SPDXID": "SPDXRef-{{ installed_package.name }}",
             "name": "{{ installed_package.name }}",
             "supplier": "Person: {{ installed_package.maintainer }}",
-            "homepage" : "{{ installed_package.homepage }}",
-            "licenseDeclared": [
-                {%- for license in installed_package.licenses -%}
-                    "{{ license }}"{{ ", " if not loop.last else "" }}
-                {%- endfor -%}
-            ],
-            "licenseConcluded": "{%- for license in installed_package.licenses -%}{{ license }}{{ " AND " if not loop.last else "" }}{%- endfor -%}",
-            "downloadLocation": "{{ installed_package.deb_url }}",
+            {%-  if installed_package.homepage -%}
+                "homepage" : "{{ installed_package.homepage }}",
+            {%- else %}
+                "homepage": "NOASSERTION",
+            {%- endif -%}
+            {%-  if installed_package.licenses -%}
+                "licenseDeclared": [
+                    {%- for license in installed_package.licenses -%}
+                        "{{ license }}"{{ ", " if not loop.last else "" }}
+                    {%- endfor -%}
+                ],
+                "licenseConcluded": "{%- for license in installed_package.licenses -%}{{ license }}{{ " AND " if not loop.last else "" }}{%- endfor -%}",
+            {%- else %}
+                "licenseDeclared": "NOASSERTION",
+                "licenseConcluded": "NOASSERTION",
+            {%- endif -%}
+            {%-  if installed_package.deb_url -%}
+                "downloadLocation": "{{ installed_package.deb_url }}",
+            {%- else %}
+                "downloadLocation": "NOASSERTION",
+            {%- endif -%}
             "PackageCopyrightText": {{ installed_package.copyright }},
             "filesAnalyzed": false,
             "checksums": [
@@ -38,9 +51,9 @@
             "versionInfo": "{{ installed_package.version }}",
             "externalRefs": [
             {
-            "referenceCategory": "PACKAGE-MANAGER",
-            "referenceLocator": "{{ installed_package.reference_locator }}",
-            "referenceType": "purl"
+                "referenceCategory": "PACKAGE-MANAGER",
+                "referenceLocator": "{{ installed_package.reference_locator }}",
+                "referenceType": "purl"
             }
             ]
          }{{ ", " if not loop.last else "" }}
