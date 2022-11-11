@@ -1,0 +1,48 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://spdx.org/rdf/terms/2.3",
+    "name": "spdx-sbom-example",
+    "spdxVersion": "SPDX-2.3",
+    "documentNamespace": "https://ubuntu.com/sbom/spdx-sbom-example.json",
+    "creationInfo": {
+   	 "creators": [
+   	 	"Organization: Ubuntu",
+        "Tool: cpc-sbom"
+   	 ],
+   	 "created": "{{ creation_date}}"
+    },
+    "packages": [
+    {% for installed_package in installed_packages %}
+         {
+            "SPDXID": "SPDXRef-{{ installed_package.name }}",
+            "name": "{{ installed_package.name }}",
+            "supplier": "Person: {{ installed_package.maintainer }}",
+            "homepage" : "{{ installed_package.homepage }}",
+            "licenseDeclared": [
+                {%- for license in installed_package.licenses -%}
+                    "{{ license }}"{{ ", " if not loop.last else "" }}
+                {%- endfor -%}
+            ],
+            "downloadLocation": "{{ installed_package.deb_url }}",
+            "PackageCopyrightText": {{ installed_package.copyright }},
+            "filesAnalyzed": false,
+            "checksums": [
+                {%- for checksum in installed_package.checksums -%}
+                    {
+                    "algorithm": "{{ checksum.algorithm }}",
+                    "checksumValue": "{{ checksum.checksum }}"
+                    }{{ ", " if not loop.last else "" }}
+                {%- endfor -%}
+            ],
+            "versionInfo": "{{ installed_package.version }}",
+            "externalRefs": [
+            {
+            "referenceCategory": "PACKAGE-MANAGER",
+            "referenceLocator": "{{ installed_package.reference_locator }}",
+            "referenceType": "purl"
+            }
+            ]
+         }{{ ", " if not loop.last else "" }}
+    {% endfor %}
+    ]
+}
