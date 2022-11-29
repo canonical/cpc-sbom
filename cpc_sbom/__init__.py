@@ -7,10 +7,24 @@ import re
 from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 
-cache = apt.Cache()
 
+def _parser():
+    parser = argparse.ArgumentParser(description='Create Software Bill Of Materials (SBOM) in spdx format')
+    parser.add_argument('--rootdir', help='Root directory of the Ubuntu cloud image filesystem which '
+                                          'you wish to generate an SBOM for. This is useful if you are generating '
+                                          'an SBOM for a mounted filesystem rather than the host. '
+                                          'Default: %(default)s', default='/')
+    return parser
 
 def generate_sbom():
+    # parse arguments using argparse
+    parser = _parser()
+    args = parser.parse_args()
+    # root dir of the Ubuntu cloud image filesystem to generate an SBOM for (default: /).
+    # Ensure that the rootdir has a trailing slash
+    rootdir = args.rootdir if args.rootdir.endswith('/') else "{}/".format(args.rootdir)
+
+    cache = apt.Cache(rootdir=rootdir)
     # query apt cache to list all the packages installed
     installed_packages = []
     for package in cache:
