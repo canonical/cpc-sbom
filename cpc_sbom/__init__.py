@@ -128,7 +128,11 @@ def generate_sbom():
                 }
             )
     # use jina2 template to generate the sbom using the spdx template
-    jinja2_environment = Environment(loader=FileSystemLoader("cpc_sbom/templates/"))
+    abs_templates_path = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        "templates")
+    jinja2_environment = Environment(loader=FileSystemLoader(abs_templates_path))
+
     jinja2_spdx_template = jinja2_environment.get_template("spdx.jinja2")
     spdx_output = jinja2_spdx_template.render(
         installed_packages=installed_packages, creation_date=datetime.now()
