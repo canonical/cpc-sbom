@@ -1,0 +1,4 @@
+/.eggs/
+/.idea/
+/cpc_sbom.egg-info/
+/cpc_sbom/__pycache__/
