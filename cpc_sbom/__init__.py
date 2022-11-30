@@ -3,10 +3,15 @@ import json
 
 import argparse
 import apt
+import logging
+import os
 
 from datetime import datetime
 from debian.copyright import Copyright, NotMachineReadableError
 from jinja2 import Environment, FileSystemLoader
+
+
+logger = logging.getLogger(__name__)
 
 
 def _parser():
@@ -20,6 +25,7 @@ def _parser():
     parser.add_argument('--ignore-copyright-file-not-found-errors', help='Ignore copyright file not found errors. ',
                         action='store_true')
     return parser
+
 
 def generate_sbom():
     # parse arguments using argparse
@@ -59,26 +65,26 @@ def generate_sbom():
                                 and copyright_paragraph.license.synopsis.strip():
                             package_licenses.append(copyright_paragraph.license.synopsis.strip())
             except ValueError as copyright_value_error:
-                print("Unable to parse copyright file for package {} - {}: {}".format(
+                logger.warning("Unable to parse copyright file for package {} - {}: {}".format(
                     package_name,
                     package_copyright_file,
                     copyright_value_error))
                 if not args.ignore_copyright_parsing_errors:
                     raise copyright_value_error
             except NotMachineReadableError as copyright_not_machine_readable_error:
-                print("Copyright file for package {} is not machine readable - {}: {}".format(
+                logger.warning("Copyright file for package {} is not machine readable - {}: {}".format(
                     package_name,
                     package_copyright_file,
                     copyright_not_machine_readable_error))
                 if not args.ignore_copyright_parsing_errors:
                     raise copyright_not_machine_readable_error
             except FileNotFoundError as copyright_file_not_found_error:
-                # raise an exception if the copyright file is not found
-                print("Copyright file not found for package {} - {}: {}".format(
+                logger.warning("Copyright file not found for package {} - {}: {}".format(
                     package_name,
                     package_copyright_file,
                     copyright_file_not_found_error))
                 if not args.ignore_copyright_file_not_found_errors:
+                    # raise an exception if the copyright file is not found
                     raise copyright_file_not_found_error
 
             # ensure that package_licenses is a unique list
