@@ -64,7 +64,7 @@ def generate_sbom():
             try:
                 with open(package_copyright_file, "rt", encoding="utf-8", errors="ignore") as copyright_file:
                     package_copyright = copyright_file.read()
-                    package_copyright_object = Copyright(copyright_file, strict=False)
+                    package_copyright_object = Copyright(package_copyright.splitlines(), strict=False)
                     all_copyright_paragraphs = package_copyright_object.all_paragraphs()
                     for copyright_paragraph in all_copyright_paragraphs:
                         if (
