@@ -4,7 +4,7 @@ CPC maintained tool for generating SBOM for cloud images
 ## Usage
 ```
 $  cpc-sbom --help
-usage: cpc-sbom [-h] [--rootdir ROOTDIR] [--ignore-copyright-parsing-errors] [--ignore-copyright-file-not-found-errors]
+usage: cpc-sbom [-h] [--rootdir ROOTDIR] [--ignore-copyright-parsing-errors] [--ignore-copyright-file-not-found-errors] [--include-installed-files]
 
 Create Software Bill Of Materials (SBOM) in spdx format
 
@@ -15,6 +15,8 @@ options:
                         Ignore copyright parsing errors.
   --ignore-copyright-file-not-found-errors
                         Ignore copyright file not found errors.
+  --include-installed-files
+                        Include all installed files from all installed packages in SBOM.
 ```
 
 ## Demo
