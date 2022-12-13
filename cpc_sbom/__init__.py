@@ -3,8 +3,11 @@ import json
 
 import argparse
 import apt
+import hashlib
 import logging
 import os
+import re
+import uuid
 
 from datetime import datetime
 from debian.copyright import Copyright, NotMachineReadableError
@@ -47,9 +50,9 @@ def generate_sbom():
     rootdir = args.rootdir if args.rootdir.endswith("/") else "{}/".format(args.rootdir)
 
     cache = apt.Cache(rootdir=rootdir)
+    # cache.update()
     # query apt cache to list all the packages installed
     installed_packages = []
-    installed_files = []
 
     # If this is an ubuntu cloud image then attempt to get the cloud image build info and include in the SBOM as a
     # document comment field
@@ -65,48 +68,93 @@ def generate_sbom():
         if package.is_installed:
             package_name = package.name
             package_shortname = package.shortname
+            package_fullname = package.fullname
             package_installed_files = []
+
+            # If specified, include all installed files from all installed packages in SBOM
+            if args.include_installed_files:
+                for package_file_path in package.installed_files:
+                    package_file_absolute_file_path = "{}{}".format(
+                        "" if package_file_path.startswith("/") else "/", package_file_path
+                    )
+                    # only proceed if the file exists in the filesystem
+                    if os.path.isfile("{}{}".format(rootdir, package_file_absolute_file_path)):
+                        # calculate the sha256 hash of the file
+                        with open("{}{}".format(rootdir, package_file_absolute_file_path), "rb") as f:
+                            package_installed_file_checksum = hashlib.sha256(f.read()).hexdigest()
+                        package_file_dict = {
+                            # ensure the filename is valid and escaped json too
+                            "fileName": json.dumps(package_file_absolute_file_path),
+                            # generate a uuid for each file
+                            "uuid": uuid.uuid4(),
+                            "sha256": package_installed_file_checksum,
+                            "license": None,  # this will be populated later when parsing the copyright file
+                        }
+                        package_installed_files.append(package_file_dict)
+
             package_copyright = ""
             package_licenses = []
+
             # find the copyright file in filesystem
             package_copyright_file = "{}usr/share/doc/{}/copyright".format(rootdir, package_shortname)
 
             # if the copyright file is found and the file exists, read the file and get the license information
-            # Note that not all copyright files are machine readable. If the copyright file is not machine readable,
-            # then we will skip the file and move on to the next package if --ignore-copyright-parsing-errors is set.
+            # Note that not all copyright files are machine readable. If the copyright file is not machine readable
+            # and if --ignore-copyright-parsing-errors is set then no exception is raised
             # If --ignore-copyright-parsing-errors is not set, then we will raise an exception and exit.
             # If the copyright file is not found, then we will skip the file and move on to the next package if
             # --ignore-copyright-file-not-found-errors is set. If --ignore-copyright-file-not-found-errors is not set,
             # then we will raise an exception and exit.
+            # if the copyright file is not machine readble then we will attempt to parse manually by
+            # grepping for "License:".
             try:
                 with open(package_copyright_file, "rt", encoding="utf-8", errors="ignore") as copyright_file:
                     package_copyright = copyright_file.read()
-                    package_copyright_object = Copyright(package_copyright.splitlines(), strict=False)
-                    all_copyright_paragraphs = package_copyright_object.all_paragraphs()
-                    for copyright_paragraph in all_copyright_paragraphs:
-                        if (
-                            copyright_paragraph.license
-                            and copyright_paragraph.license.synopsis
-                            and copyright_paragraph.license.synopsis.strip()
-                        ):
-                            package_licenses.append(copyright_paragraph.license.synopsis.strip())
+                    try:
+                        package_copyright_object = Copyright(package_copyright.splitlines(), strict=False)
+                        all_copyright_paragraphs = package_copyright_object.all_paragraphs()
+                        for copyright_paragraph in all_copyright_paragraphs:
+                            if (
+                                copyright_paragraph.license
+                                and copyright_paragraph.license.synopsis
+                                and copyright_paragraph.license.synopsis.strip()
+                            ):
+                                package_licenses.append(copyright_paragraph.license.synopsis.strip())
+                                # The license information can be retrieved for each package installed file from the
+                                # copyright file if it is machine readable and if the file is listed in a file
+                                # paragraph of the copyright file.
+                                for package_installed_file in package_installed_files:
+                                    file_specific_files_paragraph = package_copyright_object.find_files_paragraph(
+                                        package_installed_file["fileName"]
+                                    )
+                                    if file_specific_files_paragraph:
+                                        file_specific_license = file_specific_files_paragraph.license.synopsis.strip()
+                                        package_installed_file["license"] = file_specific_license
 
-            except ValueError as copyright_value_error:
-                logger.warning(
-                    "Unable to parse copyright file for package {} - {}: {}".format(
-                        package_name, package_copyright_file, copyright_value_error
-                    )
-                )
-                if not args.ignore_copyright_parsing_errors:
-                    raise copyright_value_error
-            except NotMachineReadableError as copyright_not_machine_readable_error:
-                logger.warning(
-                    "Copyright file for package {} is not machine readable - {}: {}".format(
-                        package_name, package_copyright_file, copyright_not_machine_readable_error
-                    )
-                )
-                if not args.ignore_copyright_parsing_errors:
-                    raise copyright_not_machine_readable_error
+                    except (ValueError, NotMachineReadableError) as copyright_parsing_error:
+                        logger.warning(
+                            "Unable to parse copyright file for package {} - {}: {}".format(
+                                package_name, package_copyright_file, copyright_parsing_error
+                            )
+                        )
+                        if not args.ignore_copyright_parsing_errors:
+                            raise copyright_parsing_error
+                        # If the copyright file is not in machine readable format then we need to grep for the license information
+                        # in the copyright file. This is not ideal but it is the best we can do.
+                        if package_copyright:
+                            manually_parsed_package_licenses = re.findall(
+                                r"^License: (.*)$\n", package_copyright, re.MULTILINE
+                            )
+                            manually_parsed_package_licenses_unique = list(set(manually_parsed_package_licenses))
+                            # strip any whitespace from the licenses
+                            package_licenses.extend(
+                                [
+                                    package_license.strip()
+                                    for package_license in manually_parsed_package_licenses_unique
+                                    if package_license.strip() != ""
+                                ]
+                            )
+
             except FileNotFoundError as copyright_file_not_found_error:
                 logger.warning(
                     "Copyright file not found for package {} - {}: {}".format(
@@ -116,49 +164,9 @@ def generate_sbom():
                 if not args.ignore_copyright_file_not_found_errors:
                     # raise an exception if the copyright file is not found
                     raise copyright_file_not_found_error
-            finally:
-                # ensure that package_licenses is a unique list
-                package_licenses = list(set(package_licenses))
 
-                # If specified, include all installed files from all installed packages in SBOM
-                if args.include_installed_files:
-                    # get all the md5sums from the /var/lib/dpkg/info/{{ package_name }}.md5sums file
-                    md5sums_file_path = "{}/var/lib/dpkg/info/{}.md5sums".format(rootdir, package_name)
-                    # check if file exists and then parse
-                    if os.path.isfile(md5sums_file_path):
-                        with open(md5sums_file_path) as md5sums_file:
-                            package_md5sums = md5sums_file.read().splitlines()
-                            for package_md5sum in package_md5sums:
-                                md5sum, file_path = package_md5sum.split(maxsplit=1)
-
-                                # The license information can be retrieved for each file from the copyright file
-                                # if it is machine readable and if the file is listed in a file paragraph of the
-                                # copyright file.
-                                file_specific_license = None
-                                try:
-                                    if package_copyright_object:
-                                        file_specific_files_paragraph = package_copyright_object.find_files_paragraph(
-                                            file_path
-                                        )
-                                        if file_specific_files_paragraph:
-                                            file_specific_license = (
-                                                file_specific_files_paragraph.license.synopsis.strip()
-                                            )
-                                except UnboundLocalError:
-                                    # If there is no machine readable copyright file, then we will not be able to
-                                    # retrieve the license information for each file. We can ignore this error as not
-                                    # all copyright files are machine readable.
-                                    pass
-
-                                # ensure the filename is valid and escaped json too
-                                package_file_dict = {
-                                    "fileName": json.dumps(
-                                        "{}{}".format("" if file_path.startswith("/") else "/", file_path)
-                                    ),
-                                    "md5sum": md5sum,
-                                    "license": file_specific_license,
-                                }
-                                package_installed_files.append(package_file_dict)
+            # ensure that package_licenses is a unique list
+            package_licenses = list(set(package_licenses))
 
             package_installed_record = package.installed.record
             package_version = package.installed.version
@@ -181,9 +189,12 @@ def generate_sbom():
                 checksums.append({"algorithm": "SHA512", "checksum": package_sha512})
             if package_md5sum:
                 checksums.append({"algorithm": "MD5", "checksum": package_md5sum})
+
             installed_packages.append(
                 {
                     "name": package_name,
+                    "short_name": package_shortname,
+                    "full_name": package_fullname,
                     "version": package_version,
                     "checksums": checksums,
                     "source_package_name": package_source_package_name,
@@ -191,13 +202,14 @@ def generate_sbom():
                     "installed_files": package_installed_files,
                     "homepage": package_homepage,
                     "maintainer": package_maintainer,
-                    "licenses": package_licenses,
+                    # sort the licenses to ensure that the order is consistent
+                    "licenses": sorted(package_licenses),
                     "copyright": json.dumps(package_copyright),  # ensure that the copyright is correctly escaped
                     "reference_locator": package_reference_locator,
                     "deb_url": package_url,
                 }
             )
-            installed_files.extend(package_installed_files)
+
     # use jina2 template to generate the sbom using the spdx template
     abs_templates_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "templates")
     jinja2_environment = Environment(loader=FileSystemLoader(abs_templates_path))
@@ -206,7 +218,6 @@ def generate_sbom():
     spdx_output = jinja2_spdx_template.render(
         installed_packages=installed_packages,
         creation_date=datetime.now(),
-        installed_files=installed_files,
         build_info=build_info,
     )
     spdx_output_json = json.loads(spdx_output)  # convert the spdx output to json to ensure valid json
