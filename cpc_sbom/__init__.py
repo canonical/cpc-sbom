@@ -7,7 +7,6 @@ import hashlib
 import logging
 import os
 import re
-import uuid
 
 from datetime import datetime
 from debian.copyright import Copyright, NotMachineReadableError
@@ -85,8 +84,10 @@ def generate_sbom():
                         package_file_dict = {
                             # ensure the filename is valid and escaped json too
                             "fileName": json.dumps(package_file_absolute_file_path),
-                            # generate a uuid for each file
-                            "uuid": uuid.uuid4(),
+                            # Create a unique identifier for the file. We can't use the sha256 hash as the file may
+                            # be a symlink which would result in the same identifier for two different file paths on
+                            # disk. Instead we use the file path and the md5 hash of the file path.
+                            "identifier": hashlib.md5(package_file_absolute_file_path.encode("utf-8")).hexdigest(),
                             "sha256": package_installed_file_checksum,
                             "license": None,  # this will be populated later when parsing the copyright file
                         }

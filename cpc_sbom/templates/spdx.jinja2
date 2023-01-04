@@ -58,7 +58,7 @@
             {% if installed_package.installed_files -%}
                 "hasFiles": [
                     {%- for installed_file in installed_package.installed_files %}
-                        "SPDXRef-{{ installed_file.uuid }}"{{ ", " if not loop.last else "" }}
+                        "SPDXRef-{{ installed_file.identifier }}"{{ ", " if not loop.last else "" }}
                     {%- endfor -%}
                 ],
             {%- endif %}
@@ -71,7 +71,7 @@
         {%- if installed_package.installed_files -%}
             {%- for installed_file in installed_package.installed_files -%}
                 {
-                    "SPDXID": "SPDXRef-{{ installed_file.uuid }}",
+                    "SPDXID": "SPDXRef-{{ installed_file.identifier }}",
                     "fileName": {{ installed_file.fileName }},
                     "checksums": [
                         {
