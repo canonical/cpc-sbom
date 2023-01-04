@@ -49,7 +49,6 @@ def generate_sbom():
     rootdir = args.rootdir if args.rootdir.endswith("/") else "{}/".format(args.rootdir)
 
     cache = apt.Cache(rootdir=rootdir)
-    # cache.update()
     # query apt cache to list all the packages installed
     installed_packages = []
 
