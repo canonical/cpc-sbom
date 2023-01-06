@@ -55,11 +55,11 @@ def generate_sbom():
     # If this is an ubuntu cloud image then attempt to get the cloud image build info and include in the SBOM as a
     # document comment field
     build_info = None
-    build_info_file = "{}etc/cloud/build.info".format(rootdir)
+    build_info_file = os.path.join(rootdir, "etc/cloud/build.info")
     if os.path.exists(build_info_file):
         with open(build_info_file, "rt", encoding="utf-8", errors="ignore") as f:
             build_info = f.read()
-            # removal all new lines from the build info
+            # remove all new lines from the build info
             build_info = build_info.replace("\n", ", ")
 
     for package in cache:
@@ -72,21 +72,22 @@ def generate_sbom():
             # If specified, include all installed files from all installed packages in SBOM
             if args.include_installed_files:
                 for package_file_path in package.installed_files:
-                    package_file_absolute_file_path = "{}{}".format(
-                        "" if package_file_path.startswith("/") else "/", package_file_path
-                    )
+                    # If we are using a rootdir other than / then we need to strip the initial os seperator
+                    # ('/' on linux) from the package file path. This is because if any of the arguments after rootdir
+                    # in os.path.join are absolute paths, then the initial path is discarded.
+                    package_file_absolute_file_path = os.path.join(rootdir, package_file_path.lstrip(os.sep))
                     # only proceed if the file exists in the filesystem
-                    if os.path.isfile("{}{}".format(rootdir, package_file_absolute_file_path)):
+                    if os.path.isfile(package_file_absolute_file_path):
                         # calculate the sha256 hash of the file
-                        with open("{}{}".format(rootdir, package_file_absolute_file_path), "rb") as f:
+                        with open(package_file_absolute_file_path, "rb") as f:
                             package_installed_file_checksum = hashlib.sha256(f.read()).hexdigest()
                         package_file_dict = {
                             # ensure the filename is valid and escaped json too
-                            "fileName": json.dumps(package_file_absolute_file_path),
+                            "fileName": json.dumps(package_file_path),
                             # Create a unique identifier for the file. We can't use the sha256 hash as the file may
                             # be a symlink which would result in the same identifier for two different file paths on
                             # disk. Instead we use the file path and the md5 hash of the file path.
-                            "identifier": hashlib.md5(package_file_absolute_file_path.encode("utf-8")).hexdigest(),
+                            "identifier": hashlib.md5(package_file_path.encode("utf-8")).hexdigest(),
                             "sha256": package_installed_file_checksum,
                             "license": None,  # this will be populated later when parsing the copyright file
                         }
@@ -96,7 +97,7 @@ def generate_sbom():
             package_licenses = []
 
             # find the copyright file in filesystem
-            package_copyright_file = "{}usr/share/doc/{}/copyright".format(rootdir, package_shortname)
+            package_copyright_file = os.path.join(rootdir, "usr/share/doc/{}/copyright".format(package_shortname))
 
             # if the copyright file is found and the file exists, read the file and get the license information
             # Note that not all copyright files are machine readable. If the copyright file is not machine readable
