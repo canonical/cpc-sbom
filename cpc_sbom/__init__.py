@@ -86,8 +86,8 @@ def generate_sbom():
                             "fileName": json.dumps(package_file_path),
                             # Create a unique identifier for the file. We can't use the sha256 hash as the file may
                             # be a symlink which would result in the same identifier for two different file paths on
-                            # disk. Instead we use the file path and the md5 hash of the file path.
-                            "identifier": hashlib.md5(package_file_path.encode("utf-8")).hexdigest(),
+                            # disk. Instead, we use the file path and the sha256 hash of the file path.
+                            "identifier": hashlib.sha256(package_file_path.encode("utf-8")).hexdigest(),
                             "sha256": package_installed_file_checksum,
                             "license": None,  # this will be populated later when parsing the copyright file
                         }
