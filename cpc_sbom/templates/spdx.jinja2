@@ -4,6 +4,9 @@
     "name": "spdx-sbom-example",
     "spdxVersion": "SPDX-2.3",
     "documentNamespace": "https://ubuntu.com/sbom/spdx-sbom-example.json",
+    {%-  if build_info %}
+    "documentComment": "Image build info: {{ build_info }}",
+    {% endif -%}
     "creationInfo": {
    	 "creators": [
    	 	"Organization: Ubuntu",
@@ -23,21 +26,17 @@
                 "homepage": "NOASSERTION",
             {%- endif -%}
             {%-  if installed_package.licenses -%}
-                "licenseDeclared": [
-                    {%- for license in installed_package.licenses -%}
-                        "{{ license }}"{{ ", " if not loop.last else "" }}
-                    {%- endfor -%}
-                ],
-                "licenseConcluded": "{%- for license in installed_package.licenses -%}{{ license }}{{ " AND " if not loop.last else "" }}{%- endfor -%}",
+                "licenseConcluded": "{%- for license in installed_package.licenses -%}'{{ license }}'{{ " AND " if not loop.last else "" }}{%- endfor -%}",
             {%- else %}
-                "licenseDeclared": "NOASSERTION",
                 "licenseConcluded": "NOASSERTION",
             {%- endif -%}
+            "licenseComments": "The license information for this package was concluded by parsing the package copyright file. This package copyright lists source code licenses.",
             {%-  if installed_package.deb_url -%}
                 "downloadLocation": "{{ installed_package.deb_url }}",
             {%- else %}
                 "downloadLocation": "NOASSERTION",
             {%- endif -%}
+
             "PackageCopyrightText": {{ installed_package.copyright }},
             "filesAnalyzed": false,
             "checksums": [
@@ -55,8 +54,41 @@
                 "referenceLocator": "{{ installed_package.reference_locator }}",
                 "referenceType": "purl"
             }
-            ]
+            ],
+            {% if installed_package.installed_files -%}
+                "hasFiles": [
+                    {%- for installed_file in installed_package.installed_files %}
+                        "SPDXRef-{{ installed_file.identifier }}"{{ ", " if not loop.last else "" }}
+                    {%- endfor -%}
+                ],
+            {%- endif %}
+            "sourceInfo": "acquired package info from DPKG DB, /usr/share/doc/{{ installed_package.name }}/copyright and /var/lib/dpkg/status"
          }{{ ", " if not loop.last else "" }}
+    {% endfor %}
+    ],
+    "files": [
+    {% for installed_package in installed_packages %}
+        {%- if installed_package.installed_files -%}
+            {%- for installed_file in installed_package.installed_files -%}
+                {
+                    "SPDXID": "SPDXRef-{{ installed_file.identifier }}",
+                    "fileName": {{ installed_file.fileName }},
+                    "checksums": [
+                        {
+                        "algorithm": "sha256",
+                        "checksumValue": "{{ installed_file.sha256 }}"
+                        }
+                    ],
+                    "comment": "The sha256 checksum for this file was created during SBOM generation.",
+                {%-  if installed_file.license -%}
+                    "licenseConcluded": "{{ installed_file.license }}",
+                {%- else %}
+                    "licenseConcluded": "NOASSERTION",
+                {%- endif -%}
+                    "licenseComments": "The license information for this file was concluded by parsing the package's copyright file. This package copyright lists source code licenses."
+                }{{ ", " if not loop.last else "" }}
+            {%- endfor -%}{{ ", " if not loop.last else "" }}
+        {%- endif -%}
     {% endfor %}
     ]
 }
