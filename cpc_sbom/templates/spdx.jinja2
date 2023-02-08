@@ -26,11 +26,11 @@
                 "homepage": "NOASSERTION",
             {%- endif -%}
             {%-  if installed_package.licenses -%}
-                "licenseConcluded": "{%- for license in installed_package.licenses -%}'{{ license }}'{{ " AND " if not loop.last else "" }}{%- endfor -%}",
+                "licenseDeclared": "{%- for license in installed_package.licenses -%}'{{ license }}'{{ " AND " if not loop.last else "" }}{%- endfor -%}",
             {%- else %}
-                "licenseConcluded": "NOASSERTION",
+                "licenseDeclared": "NOASSERTION",
             {%- endif -%}
-            "licenseComments": "The license information for this package was concluded by parsing the package copyright file. This package copyright lists source code licenses.",
+            "licenseComments": "The license information declared for this package was aggregated by parsing the package copyright file. See PackageCopyrightText field for full package copyright text. This package copyright lists source code licenses. The licenses declared do not conform to the SPDX License List Short Form Identifier.",
             {%-  if installed_package.deb_url -%}
                 "downloadLocation": "{{ installed_package.deb_url }}",
             {%- else %}
