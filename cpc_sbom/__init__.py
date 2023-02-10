@@ -216,9 +216,13 @@ def generate_sbom():
     jinja2_environment = Environment(loader=FileSystemLoader(abs_templates_path))
 
     jinja2_spdx_template = jinja2_environment.get_template("spdx.jinja2")
+    # Create date time in YYYY-MM-DDThh:mm:ssZ format to comply to SPDX spec
+    # https://spdx.github.io/spdx-spec/v2.3/document-creation-information/#69-created-field
+    created_date_time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+
     spdx_output = jinja2_spdx_template.render(
         installed_packages=installed_packages,
-        creation_date=datetime.now(),
+        creation_date=created_date_time,
         build_info=build_info,
     )
     spdx_output_json = json.loads(spdx_output)  # convert the spdx output to json to ensure valid json
