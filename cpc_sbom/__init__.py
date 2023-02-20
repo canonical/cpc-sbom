@@ -3,6 +3,7 @@ import json
 
 import argparse
 import apt
+import apt_pkg
 import hashlib
 import logging
 import os
@@ -27,10 +28,26 @@ def _parser():
         default="/",
     )
     parser.add_argument(
+        "--rootdir-architecture", help="The architecture of the filesystem which you wish to generate an SBOM for. "
+                                       "This is only required for when you use `--update-apt-cache` flag. This ensures "
+                                       "that the apt cache inside the filesystem is updated with the correct"
+                                       "architecture. The default for this flag is 'amd64'.",
+        default="amd64",
+    )
+    parser.add_argument(
         "--ignore-copyright-parsing-errors", help="Ignore copyright parsing errors. ", action="store_true"
     )
     parser.add_argument(
         "--ignore-copyright-file-not-found-errors", help="Ignore copyright file not found errors. ", action="store_true"
+    )
+    parser.add_argument(
+        "--update-apt-cache", help="Update the apt cache before generating the SBOM. "
+                                   "Required for images/filesystems that have had the apt cache purged."
+                                   "When this flag is used, you should run this tool as root user."
+                                   "If the architecture of the filesystem you are generating an SBOM for is "
+                                   "not 'amd64' then use the `--rootdir-architecture` flag to ensure your apt "
+                                   "cache is updated with the correct architecture.",
+        action="store_true"
     )
     parser.add_argument(
         "--include-installed-files",
@@ -48,7 +65,23 @@ def generate_sbom():
     # Ensure that the rootdir has a trailing slash
     rootdir = args.rootdir if args.rootdir.endswith("/") else "{}/".format(args.rootdir)
 
-    cache = apt.Cache(rootdir=rootdir)
+    if args.update_apt_cache:
+        # Change to using the root user when updating apt cache to avoid any apt_pkg.Error related to
+        # > Download is performed unsandboxed as root as file'
+        # > ... couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied),
+        # We assume we are running this tool as root user when using the --update-apt-cache flag so
+        # we can safely set the APT::Sandbox::User to root
+        apt_pkg.config.set("APT::Sandbox::User", "root")
+        if args.rootdir_architecture:
+            apt_pkg.config.set("APT::Architecture", args.rootdir_architecture)
+            apt_pkg.config.set("APT::Architectures", args.rootdir_architecture)
+        apt_pkg.init_system()
+        cache = apt.Cache(rootdir=rootdir)
+        cache.update()
+        cache.open()
+    else:
+        cache = apt.Cache(rootdir=rootdir)
+
     # query apt cache to list all the packages installed
     installed_packages = []
 
