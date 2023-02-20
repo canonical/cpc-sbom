@@ -23,7 +23,7 @@ options:
 
 See [demo/demo.sh](demo/demo.sh) directory for a demo of how to use this tool.
 
-See [demo/ubuntu-22.04-minimal-cloudimg-amd64.img.spdx](demo/ubuntu-22.04-minimal-cloudimg-amd64.img.spdx) for an example SPDX SBOM for a recent Ubuntu 22.04 cloud image generated with this tool.
+See [demo/ubuntu-22.04-server-cloudimg-amd64.img.spdx](demo/ubuntu-22.04-server-cloudimg-amd64.img.spdx) for an example SPDX SBOM for a recent Ubuntu 22.04 cloud image generated with this tool.
 
-See [demo/ubuntu-22.04-minimal-cloudimg-amd64.img_installed_files.spdx](demo/ubuntu-22.04-minimal-cloudimg-amd64.img_installed_files.spdx) for an example SPDX SBOM for a recent Ubuntu 22.04 cloud image generated with this tool including the listing of all files installed during package installs.
+See [demo/ubuntu-22.04-server-cloudimg-amd64.img_installed_files.spdx](demo/ubuntu-22.04-server-cloudimg-amd64.img_installed_files.spdx) for an example SPDX SBOM for a recent Ubuntu 22.04 cloud image generated with this tool including the listing of all files installed during package installs.
 
