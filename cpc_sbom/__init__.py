@@ -104,7 +104,23 @@ def generate_sbom():
 
             # If specified, include all installed files from all installed packages in SBOM
             if args.include_installed_files:
-                for package_file_path in package.installed_files:
+                # We can't use `package.installed_files` from python-apt
+                # https://salsa.debian.org/apt-team/python-apt/-/blob/main/apt/package.py#L1290
+                # as this tries to read the metadata about the package's installed files from the
+                # /var/lib/dpkg/info/<package>.list file, on the host system but for generating an SBOM on
+                # a mounted filesystem, we need to read the metadata from the filesystem itself.
+                # Instead of using `package.installed_files` to get the list of
+                # installed files for a package we can use the same logic `package.installed_files`
+                # as but ensure we read the metadata from the filesystem
+                installed_files = []
+                for name in package_name, package_fullname:
+                    path = os.path.join(rootdir, "var/lib/dpkg/info/{}.list".format(name))
+                    try:
+                        with open(path, "rb") as file_list:
+                            installed_files = file_list.read().decode("utf-8").split(u"\n")
+                    except EnvironmentError:
+                        continue
+                for package_file_path in installed_files:
                     # If we are using a rootdir other than / then we need to strip the initial os seperator
                     # ('/' on linux) from the package file path. This is because if any of the arguments after rootdir
                     # in os.path.join are absolute paths, then the initial path is discarded.
