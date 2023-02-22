@@ -6,6 +6,7 @@ import apt
 import apt_pkg
 import hashlib
 import logging
+import pkg_resources
 import os
 import re
 
@@ -269,10 +270,14 @@ def generate_sbom():
     # https://spdx.github.io/spdx-spec/v2.3/document-creation-information/#69-created-field
     created_date_time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
+    # get the version of the package that is being used to generate the sbom
+    cpc_sbom_version = pkg_resources.get_distribution("cpc-sbom").version
+
     spdx_output = jinja2_spdx_template.render(
         installed_packages=installed_packages,
         creation_date=created_date_time,
         build_info=build_info,
+        cpc_sbom_version=cpc_sbom_version,
     )
     spdx_output_json = json.loads(spdx_output)  # convert the spdx output to json to ensure valid json
     print(json.dumps(spdx_output_json, indent=4))

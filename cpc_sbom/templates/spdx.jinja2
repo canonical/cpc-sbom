@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "http://spdx.org/rdf/terms/2.3",
-    "name": "spdx-sbom-example",
+    "name": "spdx-sbom",
     "spdxVersion": "SPDX-2.3",
     "documentNamespace": "https://ubuntu.com/sbom/spdx-sbom-example.json",
     {%-  if build_info %}
@@ -10,7 +10,7 @@
     "creationInfo": {
    	 "creators": [
    	 	"Organization: Ubuntu",
-        "Tool: cpc-sbom"
+        "Tool: cpc-sbom {{ cpc_sbom_version }}"
    	 ],
    	 "created": "{{ creation_date }}"
     },

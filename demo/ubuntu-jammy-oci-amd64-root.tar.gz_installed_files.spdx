@@ -1,16 +1,16 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "http://spdx.org/rdf/terms/2.3",
-    "name": "spdx-sbom-example",
+    "name": "spdx-sbom",
     "spdxVersion": "SPDX-2.3",
     "documentNamespace": "https://ubuntu.com/sbom/spdx-sbom-example.json",
     "documentComment": "Image build info: serial: 20230217, ",
     "creationInfo": {
         "creators": [
             "Organization: Ubuntu",
-            "Tool: cpc-sbom"
+            "Tool: cpc-sbom 0.1.4"
         ],
-        "created": "2023-02-22T10:21:44Z"
+        "created": "2023-02-22T12:29:29Z"
     },
     "packages": [
         {
@@ -17056,7 +17056,7 @@
             "checksums": [
                 {
                     "algorithm": "sha256",
-                    "checksumValue": "ee7aa16bd8443a946286c9ab84a0af0cbc47aa53a8f00477bf8ada5c38580a36"
+                    "checksumValue": "cb8da0fb956bf029dac613eb597357e267fc74afe7c954d0cbd7666105209746"
                 }
             ],
             "comment": "The sha256 checksum for this file was created during SBOM generation.",
@@ -31577,7 +31577,7 @@
             "checksums": [
                 {
                     "algorithm": "sha256",
-                    "checksumValue": "e67aa70bdd68a17b371a1a6c3d2159f63c53806dac3d302007f9c4716f35dcdc"
+                    "checksumValue": "7619dd04dbb41891b13d7f86a97eacf9c900f4e41ea3e9f6c4b063749e4f81b7"
                 }
             ],
             "comment": "The sha256 checksum for this file was created during SBOM generation.",
