@@ -6,7 +6,6 @@ import apt
 import apt_pkg
 import hashlib
 import logging
-import pkg_resources
 import os
 import re
 
@@ -17,6 +16,7 @@ from jinja2 import Environment, FileSystemLoader
 
 logger = logging.getLogger(__name__)
 
+CPC_SBOM_VERSION = "0.1.5"
 
 def _parser():
     parser = argparse.ArgumentParser(description="Create Software Bill Of Materials (SBOM) in spdx format")
@@ -271,7 +271,7 @@ def generate_sbom():
     created_date_time = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
     # get the version of the package that is being used to generate the sbom
-    cpc_sbom_version = pkg_resources.get_distribution("cpc-sbom").version
+    cpc_sbom_version = CPC_SBOM_VERSION
 
     spdx_output = jinja2_spdx_template.render(
         installed_packages=installed_packages,
