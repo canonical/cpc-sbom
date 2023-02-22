@@ -16,7 +16,7 @@ from jinja2 import Environment, FileSystemLoader
 
 logger = logging.getLogger(__name__)
 
-CPC_SBOM_VERSION = "0.1.5"
+CPC_SBOM_VERSION = "0.1.6"
 
 def _parser():
     parser = argparse.ArgumentParser(description="Create Software Bill Of Materials (SBOM) in spdx format")
