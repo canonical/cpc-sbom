@@ -16,6 +16,7 @@
     },
     "packages": [
     {% for installed_package in installed_packages %}
+         {% set installed_package_loop = loop %}
          {
             "SPDXID": "SPDXRef-{{ installed_package.name }}",
             "name": "{{ installed_package.name }}",
@@ -26,7 +27,7 @@
                 "homepage": "NOASSERTION",
             {%- endif -%}
             {%-  if installed_package.licenses -%}
-                "licenseDeclared": "{%- for license in installed_package.licenses -%}'{{ license }}'{{ " AND " if not loop.last else "" }}{%- endfor -%}",
+                "licenseDeclared": "{%- for license in installed_package.licenses -%}{% set license_loop = loop %}'{{ license }}'{{ " AND " if not license_loop.last else "" }}{%- endfor -%}",
             {%- else %}
                 "licenseDeclared": "NOASSERTION",
             {%- endif -%}
@@ -41,10 +42,11 @@
             "filesAnalyzed": false,
             "checksums": [
                 {%- for checksum in installed_package.checksums -%}
+                    {% set checksum_loop = loop %}
                     {
                     "algorithm": "{{ checksum.algorithm }}",
                     "checksumValue": "{{ checksum.checksum }}"
-                    }{{ ", " if not loop.last else "" }}
+                    }{{ ", " if not checksum_loop.last else "" }}
                 {%- endfor -%}
             ],
             "versionInfo": "{{ installed_package.version }}",
@@ -58,18 +60,21 @@
             {% if installed_package.installed_files -%}
                 "hasFiles": [
                     {%- for installed_file in installed_package.installed_files %}
-                        "SPDXRef-{{ installed_file.identifier }}"{{ ", " if not loop.last else "" }}
+                        {% set installed_files_loop = loop %}
+                        "SPDXRef-{{ installed_file.identifier }}"{{ ", " if not installed_files_loop.last else "" }}
                     {%- endfor -%}
                 ],
             {%- endif %}
             "sourceInfo": "acquired package info from DPKG DB, /usr/share/doc/{{ installed_package.name }}/copyright and /var/lib/dpkg/status"
-         }{{ ", " if not loop.last else "" }}
+         }{{ ", " if not installed_package_loop.last else "" }}
     {% endfor %}
     ],
     "files": [
     {% for installed_package in installed_packages %}
+        {% set installed_package_loop = loop %}
         {%- if installed_package.installed_files -%}
             {%- for installed_file in installed_package.installed_files -%}
+                {% set installed_files_loop = loop %}
                 {
                     "SPDXID": "SPDXRef-{{ installed_file.identifier }}",
                     "fileName": {{ installed_file.fileName }},
@@ -86,8 +91,9 @@
                     "licenseConcluded": "NOASSERTION",
                 {%- endif -%}
                     "licenseComments": "The license information for this file was concluded by parsing the package's copyright file. This package copyright lists source code licenses."
-                }{{ ", " if not loop.last else "" }}
-            {%- endfor -%}{{ ", " if not loop.last else "" }}
+                }{{ ", " if not installed_files_loop.last else "" }}
+            {%- endfor -%}
+            {{ ", " if not installed_package_loop.last else "" }}
         {%- endif -%}
     {% endfor %}
     ]
