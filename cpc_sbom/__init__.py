@@ -12,6 +12,7 @@ import re
 from datetime import datetime
 from debian.copyright import Copyright, NotMachineReadableError
 from jinja2 import Environment, FileSystemLoader
+from uuid import uuid4
 
 
 logger = logging.getLogger(__name__)
@@ -55,6 +56,12 @@ def _parser():
         help="Include all installed files from all installed packages in SBOM. ",
         action="store_true",
     )
+    parser.add_argument(
+        "--document-name",
+        help="Name for the SPDX document. This is typically the package name followed by the version. "
+        "E.g. jammy-minimal-cloudimg-amd64-gke-1.26",
+        required=True,
+    )
     return parser
 
 
@@ -95,6 +102,12 @@ def generate_sbom():
             build_info = f.read()
             # remove all new lines from the build info
             build_info = build_info.replace("\n", ", ")
+
+    # document namespace format: https://[CreatorWebsite]/[pathToSpdx]/[DocumentName]-[UUID]
+    # This URI does not have to be accessible. It is only intended to provide a unique ID.
+    document_name = args.document_name
+    document_uuid = uuid4()
+    document_namespace = "https://ubuntu.com/sbom/{}-{}".format(document_name, document_uuid)
 
     for package in cache:
         if package.is_installed:
@@ -340,6 +353,7 @@ def generate_sbom():
         creation_date=created_date_time,
         build_info=build_info,
         cpc_sbom_version=cpc_sbom_version,
+        document_namespace=document_namespace,
     )
     spdx_output_json = json.loads(spdx_output)  # convert the spdx output to json to ensure valid json
     print(json.dumps(spdx_output_json, indent=4))
