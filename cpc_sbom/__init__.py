@@ -8,6 +8,7 @@ import hashlib
 import logging
 import os
 import re
+import yaml
 
 from datetime import datetime
 from debian.copyright import Copyright, NotMachineReadableError
@@ -258,6 +259,68 @@ def generate_sbom():
                     "copyright": json.dumps(package_copyright),  # ensure that the copyright is correctly escaped
                     "reference_locator": package_reference_locator,
                     "deb_url": package_url,
+                }
+            )
+
+    # include preseeded and installed snaps
+    snap_state_file = os.path.join(rootdir, "var/lib/snapd/state.json")
+    if os.path.exists(snap_state_file):
+        with open(snap_state_file, "r") as f:
+            yaml_lines = yaml.safe_load(f)["data"]["snaps"]
+            snap_names = list(yaml_lines.keys())
+            snap_names.sort()
+
+        for snap_name in snap_names:
+            snap_info = yaml_lines[snap_name]
+
+            snap_channel = snap_info.get("channel", "")
+            snap_revision = snap_info["current"]
+            snap_checksums = []
+            snap_filename = "{}_{}.snap".format(snap_name, snap_revision)
+            snap_file_path = os.path.join(rootdir, "var/lib/snapd/snaps/", snap_filename)
+            if os.path.isfile(snap_file_path):
+                # calculate the sha256 hash of the file
+                with open(snap_file_path, "rb") as f:
+                    snap_sha256sum = hashlib.sha256(f.read()).hexdigest()
+                snap_checksums.append({"algorithm": "SHA256", "checksum": snap_sha256sum})
+            # snaps aren't included in the purl-spec yet
+            # ideally this should be something along the lines of pkg:snap/name@revision?channel
+            # using a generic reference until changes get merged in to the purl-spec
+            snap_reference_locator = "pkg:generic/{}@{}?channel={}".format(snap_name, snap_revision, snap_channel)
+
+            snap_installed_files = []
+            # If specified, include all installed files from all installed packages in SBOM
+            if args.include_installed_files:
+                installed_files = [snap_file_path]
+                snap_directory = os.path.join(rootdir, "snap/", snap_name)
+                snap_files = os.walk(snap_directory)
+                for path, _, files in snap_files:
+                    for file in files:
+                        installed_files.append(os.path.join(path, file))
+
+                for file_path in installed_files:
+                    if os.path.isfile(file_path):
+                        with open(file_path, "rb") as f:
+                            snap_sha256sum = hashlib.sha256(f.read()).hexdigest()
+                        # don't include the rootdir/mountpoint
+                        relative_file_path = file_path.split(rootdir)[1]
+                        snap_file_dict = {
+                            "fileName": json.dumps(relative_file_path),
+                            "identifier": hashlib.sha256(file_path.encode("utf-8")).hexdigest(),
+                            "sha256": snap_sha256sum,
+                            "license": None,
+                        }
+                        snap_installed_files.append(snap_file_dict)
+
+            installed_packages.append(
+                {
+                    "name": snap_name,
+                    "version": snap_revision,
+                    "checksums": snap_checksums,
+                    # channel usually has a slash
+                    "comment": json.dumps("Channel: {}".format(snap_channel)),
+                    "reference_locator": snap_reference_locator,
+                    "installed_files": snap_installed_files,
                 }
             )
 

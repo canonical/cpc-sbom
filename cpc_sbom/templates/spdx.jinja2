@@ -20,7 +20,11 @@
          {
             "SPDXID": "SPDXRef-{{ installed_package.name }}",
             "name": "{{ installed_package.name }}",
-            "supplier": "Person: {{ installed_package.maintainer }}",
+            {%-  if installed_package.maintainer -%}
+                "supplier": "Person: {{ installed_package.maintainer }}",
+            {%- else %}
+                "supplier": "NOASSERTION",
+            {%- endif -%}
             {%-  if installed_package.homepage -%}
                 "homepage" : "{{ installed_package.homepage }}",
             {%- else %}
@@ -37,8 +41,11 @@
             {%- else %}
                 "downloadLocation": "NOASSERTION",
             {%- endif -%}
-
-            "PackageCopyrightText": {{ installed_package.copyright }},
+            {%-  if installed_package.copyright -%}
+                "PackageCopyrightText": {{ installed_package.copyright }},
+            {%- else %}
+                "PackageCopyrightText": "NOASSERTION",
+            {%- endif -%}
             "filesAnalyzed": false,
             "checksums": [
                 {%- for checksum in installed_package.checksums -%}
@@ -65,7 +72,14 @@
                     {%- endfor -%}
                 ],
             {%- endif %}
-            "sourceInfo": "acquired package info from DPKG DB, /usr/share/doc/{{ installed_package.name }}/copyright and /var/lib/dpkg/status"
+            {% if installed_package.comment -%}
+                "comment": {{ installed_package.comment }},
+            {%- endif %}
+            {% if "pkg:deb" in installed_package.reference_locator -%}
+                "sourceInfo": "acquired package info from DPKG DB, /usr/share/doc/{{ installed_package.name }}/copyright and /var/lib/dpkg/status"
+            {%- else %}
+                "sourceInfo": "acquired package info from /var/lib/snapd/state.json"
+            {%- endif %}
          }{{ ", " if not installed_package_loop.last else "" }}
     {% endfor %}
     ],
