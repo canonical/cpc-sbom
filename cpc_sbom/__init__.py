@@ -8,7 +8,6 @@ import hashlib
 import logging
 import os
 import re
-import yaml
 
 from datetime import datetime
 from debian.copyright import Copyright, NotMachineReadableError
@@ -266,12 +265,12 @@ def generate_sbom():
     snap_state_file = os.path.join(rootdir, "var/lib/snapd/state.json")
     if os.path.exists(snap_state_file):
         with open(snap_state_file, "r") as f:
-            yaml_lines = yaml.safe_load(f)["data"]["snaps"]
-            snap_names = list(yaml_lines.keys())
+            state = json.load(f)["data"]["snaps"]
+            snap_names = list(state.keys())
             snap_names.sort()
 
         for snap_name in snap_names:
-            snap_info = yaml_lines[snap_name]
+            snap_info = state[snap_name]
 
             snap_channel = snap_info.get("channel", "")
             snap_revision = snap_info["current"]
