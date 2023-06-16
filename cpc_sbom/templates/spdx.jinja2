@@ -3,7 +3,9 @@
     "$id": "http://spdx.org/rdf/terms/2.3",
     "name": "spdx-sbom",
     "spdxVersion": "SPDX-2.3",
-    "documentNamespace": "https://ubuntu.com/sbom/spdx-sbom-example.json",
+    "dataLicense": "CC0-1.0",
+    "SPDXID": "SPDXRef-DOCUMENT",
+    "documentNamespace": "{{ document_namespace }}",
     {%-  if build_info %}
     "documentComment": "Image build info: {{ build_info }}",
     {% endif -%}
