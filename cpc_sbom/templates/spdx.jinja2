@@ -5,6 +5,7 @@
     "spdxVersion": "SPDX-2.3",
     "dataLicense": "CC0-1.0",
     "SPDXID": "SPDXRef-DOCUMENT",
+    "documentDescribes": [ "SPDXRef-{{ document_name }}" ],
     "documentNamespace": "{{ document_namespace }}",
     {%-  if build_info %}
     "documentComment": "Image build info: {{ build_info }}",
@@ -17,6 +18,11 @@
    	 "created": "{{ creation_date }}"
     },
     "packages": [
+        {
+            "SPDXID": "SPDXRef-{{ document_name }}",
+            "name": "{{ document_name }}",
+            "downloadLocation": "NOASSERTION"
+        },
     {% for installed_package in installed_packages %}
          {% set installed_package_loop = loop %}
          {
@@ -111,6 +117,21 @@
             {%- endfor -%}
             {{ ", " if not installed_package_loop.last else "" }}
         {%- endif -%}
+    {% endfor %}
+    ],
+    "relationships": [
+        {
+          "spdxElementId":      "SPDXRef-DOCUMENT",
+          "relationshipType":   "DESCRIBES",
+          "relatedSpdxElement": "SPDXRef-{{ document_name }}"
+        },
+    {% for installed_package in installed_packages %}
+        {% set installed_package_loop = loop %}
+        {
+            "spdxElementId": "SPDXRef-{{ document_name }}",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-{{ installed_package.name }}"
+        }{{ ", " if not installed_package_loop.last else "" }}
     {% endfor %}
     ]
 }
