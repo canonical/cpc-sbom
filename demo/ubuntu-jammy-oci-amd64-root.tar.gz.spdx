@@ -5,16 +5,24 @@
     "spdxVersion": "SPDX-2.3",
     "dataLicense": "CC0-1.0",
     "SPDXID": "SPDXRef-DOCUMENT",
-    "documentNamespace": "https://ubuntu.com/sbom/ubuntu-jammy-oci-amd64-4514064e-3629-49b2-a8ee-bbd482b4930f",
+    "documentDescribes": [
+        "SPDXRef-ubuntu-jammy-oci-amd64"
+    ],
+    "documentNamespace": "https://ubuntu.com/sbom/ubuntu-jammy-oci-amd64-2a777256-4f15-4d26-99c5-05e8a594b391",
     "documentComment": "Image build info: serial: 20230624, ",
     "creationInfo": {
         "creators": [
             "Organization: Ubuntu",
             "Tool: cpc-sbom 0.1.6"
         ],
-        "created": "2023-06-28T11:58:27Z"
+        "created": "2023-06-29T15:03:21Z"
     },
     "packages": [
+        {
+            "SPDXID": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "name": "ubuntu-jammy-oci-amd64",
+            "downloadLocation": "NOASSERTION"
+        },
         {
             "SPDXID": "SPDXRef-adduser",
             "name": "adduser",
@@ -3450,5 +3458,517 @@
             "sourceInfo": "acquired package info from DPKG DB, /usr/share/doc/zlib1g/copyright and /var/lib/dpkg/status"
         }
     ],
-    "files": []
+    "files": [],
+    "relationships": [
+        {
+            "spdxElementId": "SPDXRef-DOCUMENT",
+            "relationshipType": "DESCRIBES",
+            "relatedSpdxElement": "SPDXRef-ubuntu-jammy-oci-amd64"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-adduser"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-apt"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-base-files"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-base-passwd"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-bash"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-bsdutils"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-coreutils"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-dash"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-debconf"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-debianutils"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-diffutils"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-dpkg"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-e2fsprogs"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-findutils"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-gcc-12-base"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-gpgv"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-grep"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-gzip"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-hostname"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-init-system-helpers"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libacl1"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libapt-pkg6.0"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libattr1"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libaudit-common"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libaudit1"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libblkid1"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libbz2-1.0"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libc-bin"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libc6"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libcap-ng0"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libcap2"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libcom-err2"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libcrypt1"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libdb5.3"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libdebconfclient0"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libext2fs2"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libffi8"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libgcc-s1"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libgcrypt20"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libgmp10"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libgnutls30"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libgpg-error0"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libgssapi-krb5-2"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libhogweed6"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libidn2-0"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libk5crypto3"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libkeyutils1"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libkrb5-3"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libkrb5support0"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-liblz4-1"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-liblzma5"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libmount1"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libncurses6"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libncursesw6"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libnettle8"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libnsl2"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libp11-kit0"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libpam-modules"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libpam-modules-bin"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libpam-runtime"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libpam0g"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libpcre2-8-0"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libpcre3"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libprocps8"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libseccomp2"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libselinux1"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libsemanage-common"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libsemanage2"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libsepol2"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libsmartcols1"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libss2"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libssl3"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libstdc++6"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libsystemd0"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libtasn1-6"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libtinfo6"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libtirpc-common"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libtirpc3"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libudev1"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libunistring2"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libuuid1"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libxxhash0"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-libzstd1"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-login"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-logsave"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-lsb-base"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-mawk"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-mount"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-ncurses-base"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-ncurses-bin"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-passwd"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-perl-base"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-procps"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-sed"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-sensible-utils"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-sysvinit-utils"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-tar"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-ubuntu-keyring"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-usrmerge"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-util-linux"
+        },
+        {
+            "spdxElementId": "SPDXRef-ubuntu-jammy-oci-amd64",
+            "relationshipType": "CONTAINS",
+            "relatedSpdxElement": "SPDXRef-zlib1g"
+        }
+    ]
 }
