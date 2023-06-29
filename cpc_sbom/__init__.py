@@ -354,6 +354,7 @@ def generate_sbom():
         build_info=build_info,
         cpc_sbom_version=cpc_sbom_version,
         document_namespace=document_namespace,
+        document_name=document_name,
     )
     spdx_output_json = json.loads(spdx_output)  # convert the spdx output to json to ensure valid json
     print(json.dumps(spdx_output_json, indent=4))
