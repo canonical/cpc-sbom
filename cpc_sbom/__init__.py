@@ -242,7 +242,14 @@ def generate_sbom():
             package_homepage = package.installed.homepage
             package_source_package_name = package.installed.source_name
             package_source_package_version = package.installed.source_version
-            package_url = "http://{}/{}".format(package.installed.origins[0].site, package.installed.filename)
+            package_origin_url = package.installed.origins[0].site
+            # If this SBOM is created during an image build on launchpad.net infrastructure, then the origin url
+            # will be an internal launchpad ftpmaster.internal url . We need to convert this to a publicly
+            # accessible url. The public url is the same as the internal url but with the ftpmaster.internal
+            # part replaced with archive.ubuntu.com/ubuntu
+            if "ftpmaster.internal" in package_origin_url:
+                package_origin_url = package_origin_url.replace("ftpmaster.internal", "archive.ubuntu.com/ubuntu")
+            package_url = "http://{}/{}".format(package_origin_url, package.installed.filename)
             package_reference_locator = "pkg:deb/debian/{}@{}?arch={}&repository_url={}".format(
                 package_name, package_version, package_architecture, package_url
             )
