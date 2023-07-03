@@ -1,0 +1,36 @@
+name: cpc-sbom
+summary: Create Software Bill Of Materials (SBOM) in spdx format
+description: Create Software Bill Of Materials (SBOM) in spdx format
+
+base: core22
+grade: devel
+confinement: classic
+adopt-info: cpc-sbom
+environment:
+    LC_ALL: C.UTF-8
+    LANG: C.UTF-8
+
+parts:
+    cpc-sbom:
+        plugin: python
+        source: .
+        source-type: git
+        build-attributes:
+            - enable-patchelf
+        build-packages:
+            - git
+            - python3
+            - libapt-pkg-dev
+        stage-packages:
+            - libpython3.10-minimal
+            - libpython3.10-stdlib
+            - python3.10-minimal
+            - python3.10-venv
+        override-pull: |
+            craftctl default
+            DATE="$(date +%Y.%m.%d)"
+            GIT="$(git rev-parse --short HEAD)"
+            craftctl set version="${DATE}+git${GIT}"
+apps:
+    cpc-sbom:
+        command: bin/cpc-sbom
