@@ -23,6 +23,7 @@ parts:
             - libapt-pkg-dev
             - gcc
             - g++
+            - dpkg-dev
         stage-packages:
             - libpython3.10-minimal
             - libpython3.10-stdlib
