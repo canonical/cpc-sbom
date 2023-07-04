@@ -1,0 +1,58 @@
+name: snap
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      snap-file: ${{ steps.build-snap.outputs.snap }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get latest tag
+        id: latest_tag
+        run: |
+          LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+          echo "${LATEST_TAG}"
+          echo "LATEST_TAG=${LATEST_TAG}" >> "$GITHUB_OUTPUT"
+      - name: Build snap
+        uses: snapcore/action-build@v1
+        id: build-snap
+      # Make sure the snap is installable and can be called
+      - name: Verify snapcraft snap
+        run: |
+          sudo snap install --dangerous --classic ${{ steps.build-snap.outputs.snap }}
+          cpc-sbom --help
+      # Do some testing with the snap
+      - name: Upload snap
+        uses: actions/upload-artifact@v3
+        with:
+          name: cpc-sbom.snap
+          path: ${{ steps.build-snap.outputs.snap }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.latest_tag.outputs.LATEST_TAG }}
+          release_name: Release ${{ steps.latest_tag.outputs.LATEST_TAG }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ${{ steps.build-snap.outputs.snap }}
+          asset_name: cpc-sbom-${{ steps.latest_tag.outputs.LATEST_TAG }}.snap.zip
+          asset_content_type: application/zip
