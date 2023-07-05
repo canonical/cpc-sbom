@@ -37,3 +37,7 @@ parts:
 apps:
     cpc-sbom:
         command: bin/cpc-sbom
+    cpc-sbom-inject:
+        command: bin/cpc-sbom-inject
+    inject:
+        command: bin/cpc-sbom-inject
