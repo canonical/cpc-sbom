@@ -16,7 +16,7 @@ from uuid import uuid4
 
 logger = logging.getLogger(__name__)
 
-CPC_SBOM_VERSION = "0.1.7"
+CPC_SBOM_VERSION = "0.1.8"
 
 
 def _parser():
