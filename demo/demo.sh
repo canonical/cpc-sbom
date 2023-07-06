@@ -34,7 +34,7 @@ CPC_SBOM_INJECT_SCRIPT_PATH=$(which cpc-sbom-inject)
 # generate the SPDX document and redirect any warning or errors to a log file
 # By using `--update-apt-cache --rootdir-architecture` we ensure there is a populated apt cache in
 # the cloud image filesystem before generating the SBOM
-sudo ${CPC_SBOM_SCRIPT_PATH} --update-apt-cache --rootdir-architecture ${CLOUD_IMAGE_ARCHITECTURE} --ignore-copyright-parsing-errors --ignore-copyright-file-not-found-errors --rootdir ./ubuntu-cloud-image-mnt --document-name ${DOCUMENT_NAME} > "${CLOUD_IMAGE_SPDX}" 2> "${CLOUD_IMAGE_SPDX_GENERATION_LOG}" && echo "SBOM generation successfull" || echo "SBOM generation generated warnings or errors. See '${CLOUD_IMAGE_SPDX_GENERATION_LOG}' for details"
+sudo ${CPC_SBOM_SCRIPT_PATH} --rootdir-architecture ${CLOUD_IMAGE_ARCHITECTURE} --ignore-copyright-parsing-errors --ignore-copyright-file-not-found-errors --rootdir ./ubuntu-cloud-image-mnt --document-name ${DOCUMENT_NAME} > "${CLOUD_IMAGE_SPDX}" 2> "${CLOUD_IMAGE_SPDX_GENERATION_LOG}" && echo "SBOM generation successfull" || echo "SBOM generation generated warnings or errors. See '${CLOUD_IMAGE_SPDX_GENERATION_LOG}' for details"
 ${CPC_SBOM_INJECT_SCRIPT_PATH} "${CLOUD_IMAGE}" "${CLOUD_IMAGE_SPDX}" 2>> "${CLOUD_IMAGE_SPDX_GENERATION_LOG}" && echo "Artifact name injected successfully" || echo "Could not inject artifact name. See '${CLOUD_IMAGE_SPDX_GENERATION_LOG}' for details"
 
 # generate the SPDX document including installed files and redirect any warning or errors to a log file
@@ -42,7 +42,7 @@ ${CPC_SBOM_INJECT_SCRIPT_PATH} "${CLOUD_IMAGE}" "${CLOUD_IMAGE_SPDX}" 2>> "${CLO
 CPC_SBOM_SCRIPT_PATH=$(which cpc-sbom)
 CPC_SBOM_INJECT_SCRIPT_PATH=$(which cpc-sbom-inject)
 
-sudo ${CPC_SBOM_SCRIPT_PATH} --update-apt-cache --rootdir-architecture ${CLOUD_IMAGE_ARCHITECTURE} --ignore-copyright-parsing-errors --ignore-copyright-file-not-found-errors --include-installed-files --rootdir ./ubuntu-cloud-image-mnt --document-name ${DOCUMENT_NAME} > "${CLOUD_IMAGE_SPDX_INCLUDING_INSTALLED_FILES}" 2> "${CLOUD_IMAGE_SPDX_GENERATION_LOG_INCLUDING_INSTALLED_FILES}" && echo "SBOM including installed files generation successfull" || echo "SBOM including installed files generation generated warnings or errors. See '${CLOUD_IMAGE_SPDX_GENERATION_LOG}' for details"
+sudo ${CPC_SBOM_SCRIPT_PATH} --rootdir-architecture ${CLOUD_IMAGE_ARCHITECTURE} --ignore-copyright-parsing-errors --ignore-copyright-file-not-found-errors --include-installed-files --rootdir ./ubuntu-cloud-image-mnt --document-name ${DOCUMENT_NAME} > "${CLOUD_IMAGE_SPDX_INCLUDING_INSTALLED_FILES}" 2> "${CLOUD_IMAGE_SPDX_GENERATION_LOG_INCLUDING_INSTALLED_FILES}" && echo "SBOM including installed files generation successfull" || echo "SBOM including installed files generation generated warnings or errors. See '${CLOUD_IMAGE_SPDX_GENERATION_LOG}' for details"
 ${CPC_SBOM_INJECT_SCRIPT_PATH} "${CLOUD_IMAGE}" "${CLOUD_IMAGE_SPDX_INCLUDING_INSTALLED_FILES}" 2>> "${CLOUD_IMAGE_SPDX_GENERATION_LOG_INCLUDING_INSTALLED_FILES}" && echo "Artifact name injected successfully" || echo "Could not inject artifact name. See '${CLOUD_IMAGE_SPDX_GENERATION_LOG}' for details"
 
 # unmount the cloud image
