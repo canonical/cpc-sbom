@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from .generate import generate_sbom
+from generate import generate_sbom
 
 CPC_SBOM_VERSION = "0.1.8"
 
