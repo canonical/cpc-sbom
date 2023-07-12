@@ -16,12 +16,11 @@ def _parser():
     parser.add_argument(
         "artifact_name",
         help="Artifact name to inject. This should be the image filename. "
-             "E.g. jammy-minimal-cloudimg-amd64-gke-1.26.img",
+        "E.g. jammy-minimal-cloudimg-amd64-gke-1.26.img",
     )
     parser.add_argument(
         "sbom_file",
-        help="Existing SBOM to inject values into. "
-             "E.g. jammy-minimal-cloudimg-amd64-gke-1.26.img.sbom.spdx",
+        help="Existing SBOM to inject values into. " "E.g. jammy-minimal-cloudimg-amd64-gke-1.26.img.sbom.spdx",
     )
 
     return parser
