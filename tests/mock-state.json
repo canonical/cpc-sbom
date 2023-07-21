@@ -1,0 +1,21 @@
+{
+    "data": {
+        "snaps": {
+            "core18": {
+                "type": "base",
+                "current": "2785",
+                "channel": "latest/stable"
+            },
+            "core20": {
+                "type": "base",
+                "current": "1974",
+                "channel": "latest/stable"
+            },
+            "snapd": {
+                "type": "snapd",
+                "current": "19457",
+                "channel": "latest/stable"
+            }
+        }
+    }
+}

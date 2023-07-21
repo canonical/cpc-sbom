@@ -2,3 +2,4 @@
 /.idea/
 /cpc_sbom.egg-info/
 /cpc_sbom/__pycache__/
+/tests/__pycache__/
