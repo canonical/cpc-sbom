@@ -1,0 +1,25 @@
+name: Run tox
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        python: ["3.8.10", "3.10", "3.11"]
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install tox and any other packages
+        run: pip install tox && sudo apt-get install libapt-pkg-dev  # needed to install python-apt
+      - uses: actions/checkout@v2
+      - name: Run tox
+        # Run tox using the version of Python in `PATH`
+        run: tox
