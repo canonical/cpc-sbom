@@ -1,26 +1,25 @@
 #!/usr/bin/env python3
-import apt
-import apt_pkg
 import argparse
 import json
 import logging
 import os
-
-
 from datetime import datetime
-from debian.copyright import Copyright, NotMachineReadableError
 from hashlib import sha256
-from jinja2 import Environment, FileSystemLoader
 from re import MULTILINE, findall
-from typing import Any, List, Union
+from typing import Any, List, Optional, Union
 from uuid import uuid4
+
+import apt
+import apt_pkg
+from debian.copyright import Copyright, NotMachineReadableError
+from jinja2 import Environment, FileSystemLoader
 
 logger = logging.getLogger(__name__)
 
 CPC_SBOM_VERSION = "0.1.13"
 
 
-def _parser():
+def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Create Software Bill Of Materials (SBOM) in spdx format")
     parser.add_argument(
         "--rootdir",
@@ -72,12 +71,15 @@ def _get_build_info(rootdir: str) -> str:
     """
     If this is an ubuntu cloud image, attempt to get the cloud image build info.
     """
+    build_info = ""
     build_info_file = os.path.join(rootdir, "etc/cloud/build.info")
     if os.path.exists(build_info_file):
         with open(build_info_file, "rt", encoding="utf-8", errors="ignore") as f:
             build_info = f.read()
             # remove all new lines from the build info
-            return build_info.replace("\n", ", ")
+            build_info = build_info.replace("\n", ", ")
+
+    return build_info
 
 
 def _generate_document_namespace(document_name: str) -> str:
@@ -104,7 +106,7 @@ def _generate_file_identifier(file_path: Union[str, bytes]) -> str:
     Generates a unique string to identify a file.
     (SPDX specification, clause 8.2)
     """
-    return sha256(file_path.encode("utf-8")).hexdigest()
+    return sha256(file_path.encode("utf-8")).hexdigest()  # type: ignore
 
 
 def _update_apt_cache(rootdir_architecture: str, rootdir: str) -> apt.Cache:
@@ -226,10 +228,10 @@ def _get_package_licenses(
         for copyright_paragraph in all_copyright_paragraphs:
             if (
                 copyright_paragraph.license
-                and copyright_paragraph.license.synopsis
-                and copyright_paragraph.license.synopsis.strip()
+                and copyright_paragraph.license.synopsis  # type: ignore
+                and copyright_paragraph.license.synopsis.strip()  # type: ignore
             ):
-                package_licenses.append(copyright_paragraph.license.synopsis.strip())
+                package_licenses.append(copyright_paragraph.license.synopsis.strip())  # type: ignore
                 # The license information can be retrieved for each package installed file from the
                 # copyright file if it is machine readable and if the file is listed in a file
                 # paragraph of the copyright file.
@@ -238,7 +240,7 @@ def _get_package_licenses(
                         package_installed_file["fileName"]
                     )
                     if file_specific_files_paragraph:
-                        file_specific_license = file_specific_files_paragraph.license.synopsis.strip()
+                        file_specific_license = file_specific_files_paragraph.license.synopsis.strip()  # type: ignore
                         package_installed_file["license"] = file_specific_license
 
     except (ValueError, NotMachineReadableError) as copyright_parsing_error:
@@ -266,20 +268,20 @@ def _get_package_licenses(
     return package_licenses
 
 
-def _get_package_url(package_installed: apt.Version) -> str:
+def _get_package_url(package_installed: Optional[apt.Version]) -> str:
     """
     Gets the package origin URL. This is used as the download location and is also
     part of the reference locator.
     (SPDX specification clause 7.7)
     """
-    package_origin_url = package_installed.origins[0].site
+    package_origin_url = package_installed.origins[0].site  # type: ignore
     # If this SBOM is created during an image build on launchpad.net infrastructure, then the origin url
     # will be an internal launchpad ftpmaster.internal url . We need to convert this to a publicly
     # accessible url. The public url is the same as the internal url but with the ftpmaster.internal
     # part replaced with archive.ubuntu.com/ubuntu
     if "ftpmaster.internal" in package_origin_url:
         package_origin_url = package_origin_url.replace("ftpmaster.internal", "archive.ubuntu.com/ubuntu")
-    return "http://{}/{}".format(package_origin_url, package_installed.filename)
+    return "http://{}/{}".format(package_origin_url, package_installed.filename)  # type: ignore
 
 
 def _get_package_checksums(package_installed_record: apt.package.Record) -> List[Any]:
@@ -332,13 +334,13 @@ def _get_installed_packages(
                 package_name, package_copyright, package_installed_files, ignore_copyright_parsing_errors
             )
 
-            package_installed_record = package.installed.record
-            package_version = package.installed.version
-            package_architecture = package.installed.architecture
+            package_installed_record = package.installed.record  # type: ignore
+            package_version = package.installed.version  # type: ignore
+            package_architecture = package.installed.architecture  # type: ignore
             package_maintainer = package_installed_record.get("Maintainer")
-            package_homepage = package.installed.homepage
-            package_source_package_name = package.installed.source_name
-            package_source_package_version = package.installed.source_version
+            package_homepage = package.installed.homepage  # type: ignore
+            package_source_package_name = package.installed.source_name  # type: ignore
+            package_source_package_version = package.installed.source_version  # type: ignore
             package_url = _get_package_url(package.installed)
             package_reference_locator = "pkg:deb/debian/{}@{}?arch={}&repository_url={}".format(
                 package_name, package_version, package_architecture, package_url
@@ -445,7 +447,7 @@ def _get_installed_snaps(rootdir: str, snap_state_file: str, include_installed_f
     return installed_snaps
 
 
-def generate_sbom():
+def generate_sbom() -> None:
     # parse arguments using argparse
     parser = _parser()
     args = parser.parse_args()
