@@ -12,7 +12,7 @@ from debian.copyright import Copyright, NotMachineReadableError
 from hashlib import sha256
 from jinja2 import Environment, FileSystemLoader
 from re import MULTILINE, findall
-from typing import List, Any
+from typing import Any, List, Union
 from uuid import uuid4
 
 logger = logging.getLogger(__name__)
@@ -91,7 +91,7 @@ def _generate_document_namespace(document_name: str) -> str:
     return "https://ubuntu.com/sbom/{}-{}".format(document_name, document_uuid)
 
 
-def _calculate_file_sha256sum(file_path: str | bytes) -> str:
+def _calculate_file_sha256sum(file_path: Union[str, bytes]) -> str:
     """
     Calculates the sha256 checksum of a file.
     """
@@ -99,7 +99,7 @@ def _calculate_file_sha256sum(file_path: str | bytes) -> str:
         return sha256(f.read()).hexdigest()
 
 
-def _generate_file_identifier(file_path: str | bytes) -> str:
+def _generate_file_identifier(file_path: Union[str, bytes]) -> str:
     """
     Generates a unique string to identify a file.
     (SPDX specification, clause 8.2)
