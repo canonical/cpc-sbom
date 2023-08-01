@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-CPC_SBOM_VERSION = "0.1.12"
+CPC_SBOM_VERSION = "0.1.13"
 
 if __name__ == "__main__":
     from generate import generate_sbom
