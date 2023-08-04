@@ -11,7 +11,7 @@ class SBOMFormatError(Exception):
 logger = logging.getLogger(__name__)
 
 
-def _parser():
+def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Inject a value into an existing SBOM")
     parser.add_argument(
         "artifact_name",
@@ -26,7 +26,7 @@ def _parser():
     return parser
 
 
-def inject_artifact_name():
+def inject_artifact_name() -> None:
     # parse arguments using argparse
     parser = _parser()
     args = parser.parse_args()
