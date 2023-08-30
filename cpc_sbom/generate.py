@@ -268,7 +268,7 @@ def _get_package_licenses(
     return package_licenses
 
 
-def _get_package_url(package_installed: Optional[apt.Version]) -> str:
+def _get_package_url(package_installed: Optional[apt.package.Version]) -> str:
     """
     Gets the package origin URL. This is used as the download location and is also
     part of the reference locator.
