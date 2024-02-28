@@ -36,8 +36,8 @@ parts:
             craftctl set version="${DATE}+git${GIT}"
 apps:
     cpc-sbom:
-        command: bin/cpc-sbom
+        command: bin/python3 $SNAP/bin/cpc-sbom
     cpc-sbom-inject:
-        command: bin/cpc-sbom-inject
+        command: bin/python3 $SNAP/bin/cpc-sbom-inject
     inject:
-        command: bin/cpc-sbom-inject
+        command: bin/python3 $SNAP/bin/cpc-sbom-inject
