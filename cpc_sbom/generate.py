@@ -16,7 +16,7 @@ from jinja2 import Environment, FileSystemLoader
 
 logger = logging.getLogger(__name__)
 
-CPC_SBOM_VERSION = "0.1.19"
+CPC_SBOM_VERSION = "0.1.20"
 
 
 def _parser() -> argparse.ArgumentParser:
