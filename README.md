@@ -1,5 +1,17 @@
 # cpc-sbom
-CPC maintained tool for generating SBOM for cloud images
+Canonical Public Cloud (CPC) team maintained tool for generating SBOM for cloud images
+
+<p style="color:red">
+Note: This is an interim tool to generate SBOM for Ubuntu cloud images only.
+</p>
+<p style="color:red">
+It is only supported in that context and should not be used outside the context of Canonical Public Cloud team
+produced and maintained Ubuntu cloud images.
+</p>
+<p style="color:red">
+There are ongoing efforts to create a more general tool for generating SBOMs for Ubuntu as part of both package builds 
+and image builds on launchpad.net. cpc-sbom will be deprecated or updated once that infrastructure is available.
+</p>
 
 ## Usage
 ```
