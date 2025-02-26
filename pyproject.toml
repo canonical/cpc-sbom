@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["cpc_sbom"]
+
+[project]
+name = "cpc-sbom"
+version = "0.1.21"
+description = "Create Software Bill Of Materials (SBOM) in spdx format"
+readme = "README.md"
+license = {text = "GPL-3"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+requires-python = ">=3.5"
+dependencies = [
+  "python-apt@git+https://salsa.debian.org/apt-team/python-apt.git@2.4.y#egg=python-apt",
+  "python-debian@git+https://salsa.debian.org/python-debian-team/python-debian.git@0.1.49#egg=python-debian",
+  "jinja2",
+]
+
+[project.scripts]
+cpc-sbom = "cpc_sbom.generate:generate_sbom"
+cpc-sbom-inject = "cpc_sbom.inject:inject_artifact_name"
+
+[project.urls]
+Repository = "https://github.com/canonical/cpc-sbom.git"
+Issues = "https://github.com/canonical/cpc-sbom/issues"
